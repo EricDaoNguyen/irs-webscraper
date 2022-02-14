@@ -1,3 +1,4 @@
+from gettext import find
 import requests
 from bs4 import BeautifulSoup
 
@@ -15,8 +16,13 @@ def beautifulSoup(formName, url = None):
   except requests.exceptions.RequestException:
     print('Error: Could not request from url | beautifulSoup()')
 
-def createUrl(formName):
+def createUrl():
   url = 'https://apps.irs.gov/app/picklist/list/priorFormPublication.html?resultsPerPage=200&sortColumn=sortOrder&indexOfFirstRow=0&criteria=&value=&isDescending=false'
   return url
 
-createUrl('https://apps.irs.gov/app/picklist/list/priorFormPublication.html?resultsPerPage=200&sortColumn=sortOrder&indexOfFirstRow=0&criteria=&value=&isDescending=false')
+def findTable(formName):
+  url = createUrl(formName)
+  soup = beautifulSoup('', url)
+  table = soup.find('table', { 'class': 'picklist-dataTable' })
+  list = table.find_all('tr', { 'class': ['odd', 'even'] })
+  return list
